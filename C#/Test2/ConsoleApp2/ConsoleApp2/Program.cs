@@ -43,43 +43,55 @@ namespace ConsoleApp2
         
         public static long bioHazard(int n, List<int> affected, List<int> poisonous)
         {
-            int validCombinations = 0;
-            var combinationsA = Permutations(affected).ToList();
-            var combinationsP = Permutations(poisonous).ToList();
+            var commonList = new List<int>();
+            var nonValidByIndexes = new List<int[]>();
+            var m = affected.Count;
 
-            //combinations.AddRange(poisonous.SelectMany(a => poisonous.Where(p => p != a).Select(p => new { a = a, b = p })).ToList());
+            commonList.AddRange(affected);
+            commonList.AddRange(poisonous);
 
-            //for (int i = 0; i < combinations.Count; i++)
-            //{
-            //    var row = combinations[i];
-            //    combinations.Remove(combinations.Where(x => x.a == row.b && x.b == row.a).FirstOrDefault());
-            //}
+            var permutations = Permutations(commonList).ToList();
 
-            //combinations.AddRange(affected.SelectMany(a => poisonous.Select(p => new { a = a, b = p })).ToList());
-
-            //int validCombinations = 0;
-
-            for (int i = 0; i < combinationsA.Count; i++)
+            for (int i = 0; i < m; i++)
             {
-                var validCombination = true;
-                for (int j = 0; j < combinationsA[i].Count(); j++)
-                {
-                    var index = affected.IndexOf(combinationsA[i][j]);
-                    if (index >= 0 && poisonous[index] == combinationsP[i][index] && combinationsA[i].Count() > 1)
-                    {
-                        validCombination = false;
-                    }
-                }
-
-                if (validCombination && combinationsA[i].Count() > 0)
-                {
-                    //Console.WriteLine(row);
-                    validCombinations += 1;
-                }
+                nonValidByIndexes.Add(new int[] { affected[i], poisonous[i] });
             }
-            
 
-            return 0;
+            permutations.RemoveAt(0);
+
+            for (int i = 0; i < permutations.Count-1; i++)
+            {       
+                if (permutations[i].ToList().Select((h, k) => h - k).Distinct().Skip(1).Any() && permutations[i].ToList().Count > 1)
+                {                    
+                    permutations.RemoveAt(i);
+                    i -= 1;
+                }
+                else
+                {
+                    for (int j = 0; j < nonValidByIndexes.Count; j++)
+                    {
+                        if (i <= permutations.Count - 1)
+                        {
+                            var total = 0;
+                            total += (from q1 in permutations[i].ToList()
+                                      join q2 in nonValidByIndexes[j].ToList() on q1 equals q2
+                                      select q1).Count();
+
+                            if (total == 2)
+                            {
+                                permutations.RemoveAt(i);
+                                j = -1;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }               
+            }
+
+            return permutations.Count();
         }
 
         public static IEnumerable<T[]> Permutations<T>(IEnumerable<T> source)
