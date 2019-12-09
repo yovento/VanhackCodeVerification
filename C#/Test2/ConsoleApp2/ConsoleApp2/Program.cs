@@ -19,16 +19,16 @@ namespace ConsoleApp2
         static void Main(string[] args)
         {
             int n = Convert.ToInt32(3);
-
-            int affectedCount = Convert.ToInt32(3);
+            int m = Convert.ToInt32(3);
+            int affectedCount = Convert.ToInt32(m);
 
             List<int> affected = new List<int>();
-                        
-            affected.Add(2);            
+
+            affected.Add(2);
             affected.Add(1);
             affected.Add(3);
 
-            int poisonousCount = Convert.ToInt32(3);
+            int poisonousCount = Convert.ToInt32(m);
 
             List<int> poisonous = new List<int>();
 
@@ -48,36 +48,26 @@ namespace ConsoleApp2
             var commonList = new List<int>();
             var nonValidByIndexes = new List<int[]>();
             var duplicatedValues = new List<int[]>();
-            var m = affected.Count;
 
-            commonList.AddRange(affected);
-            commonList.AddRange(poisonous);
+            for (int i = 1; i <= n; i++)
+            {
+                commonList.Add(i);
+            }
 
             var permutations = Permutations(commonList).ToList();
 
-            for (int i = 0; i < m; i++)
+            for (int i = 0; i < affected.Count(); i++)
             {
                 nonValidByIndexes.Add(new int[] { affected[i], poisonous[i] });
             }
 
             permutations.RemoveAt(0);
 
-            //Duplicates in the interval
-            for (int i = 0; i < permutations.Count; i++)
+            for (int i = 0; i < permutations.Count - 1; i++)
             {
-               if ( permutations[i].GroupBy(x => x).Where(x => x.Count() > 1).Select(x => x.Key).Count() > 0)
-                {
-                    permutations.RemoveAt(i);
-                    i -= 1;
-                }
-            }           
-
-
-            for (int i = 0; i < permutations.Count-1; i++)
-            {       
                 //Consecutive validation
                 if (permutations[i].ToList().Select((h, k) => h - k).Distinct().Skip(1).Any() && permutations[i].ToList().Count > 1)
-                {                    
+                {
                     permutations.RemoveAt(i);
                     i -= 1;
                 }
@@ -104,17 +94,9 @@ namespace ConsoleApp2
                             break;
                         }
                     }
-                }               
+                }
             }
 
-            for (int i = 0; i < permutations.Count; i++)
-            {
-                for (int j = 0; j < permutations[i].Count(); j++)
-                {
-                    Console.Write(permutations[i][j]);
-                }
-                Console.WriteLine();
-            }
 
             return permutations.Count();
         }
@@ -129,5 +111,7 @@ namespace ConsoleApp2
                  .Where((v, i) => (index & (1 << i)) != 0)
                  .ToArray());
         }
+
+        
     }
 }
