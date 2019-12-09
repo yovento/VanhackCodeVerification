@@ -18,21 +18,23 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            int n = Convert.ToInt32(4);
+            int n = Convert.ToInt32(3);
 
-            int affectedCount = Convert.ToInt32(2);
+            int affectedCount = Convert.ToInt32(3);
 
             List<int> affected = new List<int>();
                         
-            affected.Add(1);            
-            affected.Add(2);
+            affected.Add(2);            
+            affected.Add(1);
+            affected.Add(3);
 
-            int poisonousCount = Convert.ToInt32(2);
+            int poisonousCount = Convert.ToInt32(3);
 
             List<int> poisonous = new List<int>();
 
             poisonous.Add(3);
-            poisonous.Add(4);
+            poisonous.Add(3);
+            poisonous.Add(1);
 
             long result = bioHazard(n, affected, poisonous);
 
@@ -45,6 +47,7 @@ namespace ConsoleApp2
         {
             var commonList = new List<int>();
             var nonValidByIndexes = new List<int[]>();
+            var duplicatedValues = new List<int[]>();
             var m = affected.Count;
 
             commonList.AddRange(affected);
@@ -59,8 +62,20 @@ namespace ConsoleApp2
 
             permutations.RemoveAt(0);
 
+            //Duplicates in the interval
+            for (int i = 0; i < permutations.Count; i++)
+            {
+               if ( permutations[i].GroupBy(x => x).Where(x => x.Count() > 1).Select(x => x.Key).Count() > 0)
+                {
+                    permutations.RemoveAt(i);
+                    i -= 1;
+                }
+            }           
+
+
             for (int i = 0; i < permutations.Count-1; i++)
             {       
+                //Consecutive validation
                 if (permutations[i].ToList().Select((h, k) => h - k).Distinct().Skip(1).Any() && permutations[i].ToList().Count > 1)
                 {                    
                     permutations.RemoveAt(i);
@@ -68,6 +83,7 @@ namespace ConsoleApp2
                 }
                 else
                 {
+                    //Non valid indexes removal
                     for (int j = 0; j < nonValidByIndexes.Count; j++)
                     {
                         if (i <= permutations.Count - 1)
@@ -89,6 +105,15 @@ namespace ConsoleApp2
                         }
                     }
                 }               
+            }
+
+            for (int i = 0; i < permutations.Count; i++)
+            {
+                for (int j = 0; j < permutations[i].Count(); j++)
+                {
+                    Console.Write(permutations[i][j]);
+                }
+                Console.WriteLine();
             }
 
             return permutations.Count();
