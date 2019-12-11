@@ -18,23 +18,23 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            int n = Convert.ToInt32(3);
-            int m = Convert.ToInt32(3);
+            int n = Convert.ToInt32(4);
+            int m = Convert.ToInt32(2);
             int affectedCount = Convert.ToInt32(m);
 
             List<int> affected = new List<int>();
 
-            affected.Add(2);
             affected.Add(1);
-            affected.Add(3);
+            affected.Add(2);
+            //affected.Add(3);
 
             int poisonousCount = Convert.ToInt32(m);
 
             List<int> poisonous = new List<int>();
 
             poisonous.Add(3);
-            poisonous.Add(3);
-            poisonous.Add(1);
+            poisonous.Add(4);
+            //poisonous.Add(1);
 
             long result = bioHazard(n, affected, poisonous);
 
@@ -45,20 +45,15 @@ namespace ConsoleApp2
         
         public static long bioHazard(int n, List<int> affected, List<int> poisonous)
         {
-            var commonList = new List<int>();
-            var nonValidByIndexes = new List<int[]>();
-            var duplicatedValues = new List<int[]>();
+            var nonValidIndexes = new List<int[]>();
 
-            for (int i = 1; i <= n; i++)
-            {
-                commonList.Add(i);
-            }
+            int[] arr = Enumerable.Range(1, n).ToArray();
 
-            var permutations = Permutations(commonList).ToList();
+            var permutations = Enumerable.Range(0, 1 << (arr.Length)).Select(index => arr.Where((v, i) => (index & (1 << i)) != 0).ToArray()).ToList();
 
             for (int i = 0; i < affected.Count(); i++)
             {
-                nonValidByIndexes.Add(new int[] { affected[i], poisonous[i] });
+                nonValidIndexes.Add(new int[] { affected[i], poisonous[i] });
             }
 
             permutations.RemoveAt(0);
@@ -74,13 +69,13 @@ namespace ConsoleApp2
                 else
                 {
                     //Non valid indexes removal
-                    for (int j = 0; j < nonValidByIndexes.Count; j++)
+                    for (int j = 0; j < nonValidIndexes.Count; j++)
                     {
                         if (i <= permutations.Count - 1)
                         {
                             var total = 0;
                             total += (from q1 in permutations[i].ToList()
-                                      join q2 in nonValidByIndexes[j].ToList() on q1 equals q2
+                                      join q2 in nonValidIndexes[j].ToList() on q1 equals q2
                                       select q1).Count();
 
                             if (total == 2)
@@ -101,17 +96,6 @@ namespace ConsoleApp2
             return permutations.Count();
         }
 
-        public static IEnumerable<T[]> Permutations<T>(IEnumerable<T> source)
-        {
-            T[] data = source.ToArray();
-
-            return Enumerable
-              .Range(0, 1 << (data.Length))
-              .Select(index => data
-                 .Where((v, i) => (index & (1 << i)) != 0)
-                 .ToArray());
-        }
-
-        
+       
     }
 }
