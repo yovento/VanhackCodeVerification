@@ -42,7 +42,7 @@ namespace ConsoleApp2
             Console.ReadLine();
         }
 
-        
+
         public static long bioHazard(int n, List<int> affected, List<int> poisonous)
         {
             var nonValidIndexes = new List<int[]>();
@@ -58,44 +58,41 @@ namespace ConsoleApp2
 
             permutations.RemoveAt(0);
 
+            //Consecutive validation
+            permutations.FindAll(x => x.ToList().Select((h, k) => h - k).Distinct().Skip(1).Any() && x.ToList().Count > 1).ToList().ForEach(e => permutations.Remove(e));
+
+            
+
             for (int i = 0; i < permutations.Count - 1; i++)
             {
-                //Consecutive validation
-                if (permutations[i].ToList().Select((h, k) => h - k).Distinct().Skip(1).Any() && permutations[i].ToList().Count > 1)
+                //Non valid indexes removal
+                for (int j = 0; j < nonValidIndexes.Count; j++)
                 {
-                    permutations.RemoveAt(i);
-                    i -= 1;
-                }
-                else
-                {
-                    //Non valid indexes removal
-                    for (int j = 0; j < nonValidIndexes.Count; j++)
+                    if (i <= permutations.Count - 1)
                     {
-                        if (i <= permutations.Count - 1)
-                        {
-                            var total = 0;
-                            total += (from q1 in permutations[i].ToList()
-                                      join q2 in nonValidIndexes[j].ToList() on q1 equals q2
-                                      select q1).Count();
+                        var total = 0;
+                        total += (from q1 in permutations[i].ToList()
+                                  join q2 in nonValidIndexes[j].ToList() on q1 equals q2
+                                  select q1).Count();
 
-                            if (total == 2)
-                            {
-                                permutations.RemoveAt(i);
-                                j = -1;
-                            }
-                        }
-                        else
+                        if (total == 2)
                         {
-                            break;
+                            permutations.RemoveAt(i);
+                            j = -1;
                         }
                     }
+                    else
+                    {
+                        break;
+                    }
                 }
+
             }
 
 
             return permutations.Count();
         }
 
-       
+
     }
 }
