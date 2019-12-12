@@ -18,15 +18,15 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            int n = Convert.ToInt32(3);
-            int m = Convert.ToInt32(3);
+            int n = Convert.ToInt32(5);
+            int m = Convert.ToInt32(2);
             int affectedCount = Convert.ToInt32(m);
 
             List<int> affected = new List<int>();
 
-            affected.Add(2);
             affected.Add(1);
-            affected.Add(3);
+            affected.Add(2);
+            //affected.Add(3);
             //affected.Add(3);
             //affected.Add(3);
 
@@ -35,8 +35,8 @@ namespace ConsoleApp2
             List<int> poisonous = new List<int>();
 
             poisonous.Add(3);
-            poisonous.Add(3);
-            poisonous.Add(1);
+            poisonous.Add(5);
+            //poisonous.Add(1);
             //poisonous.Add(6);
             //poisonous.Add(4);
             //poisonous.Add(1);
@@ -57,18 +57,17 @@ namespace ConsoleApp2
             permutations.RemoveAt(0);
 
             //Consecutive validation
-            permutations.RemoveAll (x => x.ToList().Select((h, k) => h - k).Distinct().Skip(1).Any() && x.ToList().Count > 1);
+            permutations.RemoveAll(x => x.ToList().Select((h, k) => h - k).Distinct().Skip(1).Any() && x.ToList().Count > 1);
 
-            permutations.RemoveAll(x =>  (affected.Select((g, idx) => new int[] { g, poisonous[idx] }).ToList()).Any( y=>
-                                    (from q1 in x.ToList()
-                                    join q2 in y.ToList() on q1 equals q2
-                                    select q1).Count() == 2
+            //Indexes validation
+            permutations.RemoveAll(x => (affected.Select((g, idx) => new int[] { g, poisonous[idx] }).ToList()).Any(y =>
+                                  (from q1 in x.ToList()
+                                   join q2 in y.ToList() on q1 equals q2
+                                   select q1).Count() == 2
 
-                                    ));            
+                                    ));
 
             return permutations.Count();
         }
-
-
     }
 }
