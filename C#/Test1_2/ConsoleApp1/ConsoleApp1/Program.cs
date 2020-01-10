@@ -14,61 +14,108 @@ using System;
 
 namespace ConsoleApp1
 {
+    public class CusComparer : IEqualityComparer<List<int>>
+    {
+        public bool Equals(List<int> x, List<int> y)
+        {
+            return x.SequenceEqual(y);
+        }
+
+        public int GetHashCode(List<int> obj)
+        {
+            int hashCode = 0;
+
+            for (var index = 0; index < obj.Count; index++)
+            {
+                hashCode ^= new { Index = index, Item = obj[index] }.GetHashCode();
+            }
+
+            return hashCode;
+        }
+    }
     class Program
     {
 
         public static int countMeetings(List<int> arrival, List<int> departure)
         {
-            int maxMeetingDays = 0;
-            int actualMeetingDay = 0;
-
             List<int> meetArray = new List<int>();
             List<int> tempArray = departure.Zip(arrival, (x, y) => x - y).ToList();
-
-            maxMeetingDays = arrival.Select(x => x).Max() == departure.Select(x => x).Max() ? arrival.Select(x => x).Max() : departure.Select(x => x).Max();
-
-            for (int i = 0; i < tempArray.Count; i++)
+            var newList = arrival.Zip(departure, (a, d) => new { arrival = a, departure = d, iguales = a - d }).OrderByDescending(a => a.iguales).ToList();
+            while (newList.Count != 0)
             {
-                if (tempArray[i] == actualMeetingDay)
+                if (newList[0].iguales == 0)
                 {
-                    for (int j = arrival[i]; j < departure[i]; j++)
+                    meetArray.Add(newList[0].arrival);
+                    newList = newList.Where(n => !(n.arrival.Equals(newList[0].arrival) && n.departure.Equals(newList[0].arrival))).ToList();
+                }
+                else
+                {
+                    var a = !meetArray.Contains(newList[0].arrival);
+                    var d = !meetArray.Contains(newList[0].departure);
+                    if (a)
                     {
+                        meetArray.Add(newList[0].arrival);
 
+                    }
+                    if (d)
+                    {
+                        meetArray.Add(newList[0].departure);
                     }
                 }
             }
-            foreach (var item in tempArray)
-            {
-                
-                
-
-                
-                if (item <= actualMeetingDay && meetArray[actualMeetingDay] == 0)
-                {
-                    meetArray[actualMeetingDay]
-                }
-            }
 
 
-            return 0;
+            return meetArray.Count();
         }
         static void Main(string[] args)
         {
-            int arrivalCount = Convert.ToInt32(3);
+            int arrivalCount = Convert.ToInt32(2);
 
             List<int> arrival = new List<int>();
             List<int> departure = new List<int>();
 
-            arrival.Add(1);
+            //arrival.Add(1);
+            //arrival.Add(2);
+            //arrival.Add(3);
+            //arrival.Add(1);
+            //arrival.Add(1);
+            //arrival.Add(1);
+            //arrival.Add(1);
+
+            //arrival.Add(1);
+            //arrival.Add(1);
+            //arrival.Add(2);
+
             arrival.Add(1);
             arrival.Add(2);
+            arrival.Add(1);
+            arrival.Add(2);
+            arrival.Add(2);
+            //1, 2, 1, 2, 2
 
+            //departure.Add(1);
+            //departure.Add(2);
+            //departure.Add(3);
+            //departure.Add(1);
+            //departure.Add(1);
+            //departure.Add(1);
+            //departure.Add(1);
+
+            //departure.Add(1);
+            //departure.Add(2);
+            //departure.Add(2);
+
+            departure.Add(3);
+            departure.Add(2);
             departure.Add(1);
-            departure.Add(2);
-            departure.Add(2);
+            departure.Add(3);
+            departure.Add(3);
+            //3, 2, 1, 3, 3
 
 
             int result = countMeetings(arrival, departure);
+            Console.WriteLine(result);
+            Console.ReadLine();
         }
     }
 }
