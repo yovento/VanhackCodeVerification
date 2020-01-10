@@ -1,0 +1,10 @@
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\bin\Debug\ConsoleApp1.exe.config
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\bin\Debug\ConsoleApp1.exe
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\bin\Debug\ConsoleApp1.pdb
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.csprojAssemblyReference.cache
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.CoreCompileInputs.cache
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.exe
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.pdb
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\bin\Debug\Newtonsoft.Json.dll
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\bin\Debug\Newtonsoft.Json.xml
+C:\GitHub\VanhackCodeVerification\C#\Test3\ConsoleApp1\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.CopyComplete
