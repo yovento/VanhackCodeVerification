@@ -14,59 +14,71 @@ using System;
 
 namespace ConsoleApp1
 {
-    public class CusComparer : IEqualityComparer<List<int>>
-    {
-        public bool Equals(List<int> x, List<int> y)
-        {
-            return x.SequenceEqual(y);
-        }
 
-        public int GetHashCode(List<int> obj)
-        {
-            int hashCode = 0;
-
-            for (var index = 0; index < obj.Count; index++)
-            {
-                hashCode ^= new { Index = index, Item = obj[index] }.GetHashCode();
-            }
-
-            return hashCode;
-        }
-    }
     class Program
     {
 
+        class meeting
+        {
+            public int arrival { get; set; }
+            public int departure { get; set; }
+            public int index { get; set; }
+        }
+
         public static int countMeetings(List<int> arrival, List<int> departure)
         {
-            List<int> meetArray = new List<int>();
-            List<int> tempArray = departure.Zip(arrival, (x, y) => x - y).ToList();
-            var newList = arrival.Zip(departure, (a, d) => new { arrival = a, departure = d, iguales = a - d }).OrderByDescending(a => a.iguales).ToList();
-            while (newList.Count != 0)
-            {
-                if (newList[0].iguales == 0)
-                {
-                    meetArray.Add(newList[0].arrival);
-                    newList = newList.Where(n => !(n.arrival.Equals(newList[0].arrival) && n.departure.Equals(newList[0].arrival))).ToList();
-                }
-                else
-                {
-                    var a = !meetArray.Contains(newList[0].arrival);
-                    var d = !meetArray.Contains(newList[0].departure);
-                    if (a)
-                    {
-                        meetArray.Add(newList[0].arrival);
+            var n = arrival.Count();
+            meeting[] meet = new meeting[n];
 
-                    }
-                    if (d)
-                    {
-                        meetArray.Add(newList[0].departure);
-                    }
-                }
+            for (int i = 0; i < n; i++)
+            {
+                meet[i] = new meeting { arrival = arrival[i], departure = departure[i], index = i } ;                
             }
 
+            meet = meet.OrderBy(x => x.departure - x.arrival).ThenBy(x => x.departure).ToArray();
 
-            return meetArray.Count();
+            List<int> m = new List<int>();
+            
+            for (int i = 0; i < n; i++)
+            {
+                int arr = meet[i].arrival;
+                int dep = meet[i].departure;
+                int freeDay = nextGreater(m, m.Count(), arr - 1);
+
+                Console.WriteLine(arr.ToString() + " " + dep.ToString());
+                if (freeDay != 0 && freeDay <= dep)
+                {
+                    m.Add(freeDay);
+                }
+            }
+            return m.Count();
         }
+
+        static int nextGreater(List<int> arr, int lenght, int start)
+        {
+            int low = 0, high = lenght - 1, ans = start + 1;
+
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+
+                if (arr[mid] <= ans)
+                {
+
+                    if (arr[mid] == ans)
+                    {
+                        ans++;
+                        high = lenght - 1;
+                    }
+                    low = mid + 1;
+                }
+                else
+                    high = mid - 1;
+            }
+
+            return ans;
+        }
+
         static void Main(string[] args)
         {
             int arrivalCount = Convert.ToInt32(2);
@@ -74,48 +86,51 @@ namespace ConsoleApp1
             List<int> arrival = new List<int>();
             List<int> departure = new List<int>();
 
-            //arrival.Add(1);
-            //arrival.Add(2);
-            //arrival.Add(3);
-            //arrival.Add(1);
-            //arrival.Add(1);
+   
             //arrival.Add(1);
             //arrival.Add(1);
 
-            //arrival.Add(1);
+            arrival.Add(99848);
+            arrival.Add(99849);
+            arrival.Add(99848);
+
+            arrival.Add(99940);
+            arrival.Add(99982);
+            arrival.Add(23936);
+            //arrival.Add(11);
+
             //arrival.Add(1);
             //arrival.Add(2);
-
-            arrival.Add(1);
-            arrival.Add(2);
-            arrival.Add(1);
-            arrival.Add(2);
-            arrival.Add(2);
+            //arrival.Add(1);
+            //arrival.Add(2);
+            //arrival.Add(2);
             //1, 2, 1, 2, 2
 
-            //departure.Add(1);
-            //departure.Add(2);
+
+            departure.Add(99848);
+            departure.Add(99849);
+            departure.Add(99849);
+
+            departure.Add(99941);
+            departure.Add(99983);
+            departure.Add(23938);
+            //departure.Add(11);
+
             //departure.Add(3);
-            //departure.Add(1);
-            //departure.Add(1);
-            //departure.Add(1);
-            //departure.Add(1);
+            //departure.Add(1000000);
 
+            //departure.Add(3);
+            //departure.Add(2);
             //departure.Add(1);
-            //departure.Add(2);
-            //departure.Add(2);
-
-            departure.Add(3);
-            departure.Add(2);
-            departure.Add(1);
-            departure.Add(3);
-            departure.Add(3);
+            //departure.Add(3);
+            //departure.Add(3);
             //3, 2, 1, 3, 3
-
 
             int result = countMeetings(arrival, departure);
             Console.WriteLine(result);
             Console.ReadLine();
         }
     }
+
+
 }
